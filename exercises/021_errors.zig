@@ -9,7 +9,7 @@
 // "TooSmall". Please add it where needed!
 const MyNumberError = error{
     TooBig,
-    ???,
+    TooSmall,
     TooFour,
 };
 
@@ -22,16 +22,20 @@ pub fn main() void {
         std.debug.print("{}", .{n});
 
         const number_error = numberFail(n);
-
-        if (number_error == MyNumberError.TooBig) {
-            std.debug.print(">4. ", .{});
+        switch (number_error) {
+            MyNumberError.TooBig => std.debug.print(">4. ", .{}),
+            MyNumberError.TooSmall => std.debug.print("<4. ", .{}),
+            MyNumberError.TooFour => std.debug.print("=4. ", .{}),
         }
-        if (???) {
-            std.debug.print("<4. ", .{});
-        }
-        if (number_error == MyNumberError.TooFour) {
-            std.debug.print("=4. ", .{});
-        }
+        // if (number_error == MyNumberError.TooBig) {
+        //     std.debug.print(">4. ", .{});
+        // }
+        // if (number_error == MyNumberError.TooSmall) {
+        //     std.debug.print("<4. ", .{});
+        // }
+        // if (number_error == MyNumberError.TooFour) {
+        //     std.debug.print("=4. ", .{});
+        // }
     }
 
     std.debug.print("\n", .{});
