@@ -27,9 +27,14 @@ const std = @import("std");
 pub fn main() void {
     const result = deepThought();
 
+    // if (result) |r| {
+    //     std.debug.print("The Ultimate Answer: {}.\n", .{r});
+    // } else {
+    //     std.debug.print("The Ultimate Answer: {}.\n", .{42});
+    // }
     // Please threaten the result so that answer is either the
     // integer value from deepThought() OR the number 42:
-    const answer: u8 = result;
+    const answer: u8 = result orelse 42;
 
     std.debug.print("The Ultimate Answer: {}.\n", .{answer});
 }

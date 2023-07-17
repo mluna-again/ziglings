@@ -9,6 +9,8 @@
 //
 const std = @import("std");
 
+const elephantError = error{ noTrunk, noTail };
+
 const Elephant = struct {
     letter: u8,
     tail: ?*Elephant = null,
@@ -16,7 +18,9 @@ const Elephant = struct {
     visited: bool = false,
 
     // Elephant tail methods!
-    pub fn getTail(self: *Elephant) *Elephant {
+    pub fn getTail(self: *Elephant) !*Elephant {
+        if (self.tail == null) return elephantError.noTail;
+
         return self.tail.?; // Remember, this means "orelse unreachable"
     }
 
@@ -27,7 +31,15 @@ const Elephant = struct {
     // Your Elephant trunk methods go here!
     // ---------------------------------------------------
 
-    ???
+    pub fn getTrunk(self: *Elephant) !*Elephant {
+        if (self.trunk == null) return elephantError.noTrunk;
+
+        return self.trunk.?;
+    }
+
+    pub fn hasTrunk(self: *Elephant) bool {
+        return self.trunk != null;
+    }
 
     // ---------------------------------------------------
 
@@ -42,7 +54,7 @@ const Elephant = struct {
     }
 };
 
-pub fn main() void {
+pub fn main() !void {
     var elephantA = Elephant{ .letter = 'A' };
     var elephantB = Elephant{ .letter = 'B' };
     var elephantC = Elephant{ .letter = 'C' };
@@ -55,13 +67,13 @@ pub fn main() void {
     elephantB.trunk = &elephantA;
     elephantC.trunk = &elephantB;
 
-    visitElephants(&elephantA);
+    try visitElephants(&elephantA);
 
     std.debug.print("\n", .{});
 }
 
 // This function visits all elephants twice, tails to trunks.
-fn visitElephants(first_elephant: *Elephant) void {
+fn visitElephants(first_elephant: *Elephant) !void {
     var e = first_elephant;
 
     // We follow the tails!
@@ -69,10 +81,9 @@ fn visitElephants(first_elephant: *Elephant) void {
         e.print();
         e.visit();
 
-        // This gets the next elephant or stops.
-        if (e.hasTail()) {
-            e = e.getTail();
-        } else {
+        if (e.getTail()) |tail| {
+            e = tail;
+        } else |_| {
             break;
         }
     }
@@ -81,10 +92,9 @@ fn visitElephants(first_elephant: *Elephant) void {
     while (true) {
         e.print();
 
-        // This gets the previous elephant or stops.
-        if (e.hasTrunk()) {
-            e = e.getTrunk();
-        } else {
+        if (e.getTrunk()) |trunk| {
+            e = trunk;
+        } else |_| {
             break;
         }
     }
